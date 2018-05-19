@@ -68,8 +68,10 @@ public class SeamCarver {
          // distanceTo[y][x] stores the shortest distance from pixel (x,y) to a virtual top node
       double[][] distanceTo = new double[height()][width()];
       for (int row = 0; row < height(); row++) {
-         if (row == 0)  Arrays.fill(distanceTo[row], 1000.0);
-         else        Arrays.fill(distanceTo[row], Double.POSITIVE_INFINITY);
+         if (row == 0)
+            Arrays.fill(distanceTo[row], 1000.0);
+         else
+            Arrays.fill(distanceTo[row], Double.POSITIVE_INFINITY);
       }
       
       // precomputes energy for each pixel
@@ -82,9 +84,12 @@ public class SeamCarver {
       for (int row = 0; row < height()-1; row++)
          for (int col = 0; col < width(); col++) {
             int[] offsets;
-            if (col == 0)           offsets = new int[]{0, 1};
-            else if (col == width()-1) offsets = new int[]{-1, 0};
-            else                 offsets = new int[]{-1, 0, 1};
+            if (col == 0)
+               offsets = new int[]{0, 1};
+            else if (col == width()-1)
+               offsets = new int[]{-1, 0};
+            else
+               offsets = new int[]{-1, 0, 1};
             for (int s: offsets)
                if (distanceTo[row+1][col+s] > distanceTo[row][col]+energies[row+1][col+s]) {
                   distanceTo[row+1][col+s] = distanceTo[row][col]+energies[row+1][col+s];

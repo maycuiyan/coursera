@@ -66,50 +66,50 @@ public class SeamCarver {
       int[][] offsetTo = new int[height()][width()];
       
       // distanceTo[y][x] stores the shortest distance from pixel (x,y) to a virtual top node
-   double[][] distanceTo = new double[height()][width()];
-   for (int row = 0; row < height(); row++) {
-      if (row == 0)
-         Arrays.fill(distanceTo[row], 1000.0);
-      else
-         Arrays.fill(distanceTo[row], Double.POSITIVE_INFINITY);
-   }
-   
-   // precomputes energy for each pixel
-   double[][] energies = new double[height()][width()];
-   for (int row = 0; row < height(); row++)
-      for (int col = 0; col < width(); col++)
-         energies[row][col] = energy(col, row);
-   
-   // dynamic programming (shortest path via topological sort)
-   for (int row = 0; row < height()-1; row++)
-      for (int col = 0; col < width(); col++) {
-         int[] offsets;
-         if (col == 0)
-            offsets = new int[]{0, 1};
-         else if (col == width()-1)
-            offsets = new int[]{-1, 0};
+      double[][] distanceTo = new double[height()][width()];
+      for (int row = 0; row < height(); row++) {
+         if (row == 0)
+            Arrays.fill(distanceTo[row], 1000.0);
          else
-            offsets = new int[]{-1, 0, 1};
-         for (int s: offsets)
-            if (distanceTo[row+1][col+s] > distanceTo[row][col]+energies[row+1][col+s]) {
-               distanceTo[row+1][col+s] = distanceTo[row][col]+energies[row+1][col+s];
-               offsetTo[row+1][col+s] = s;
-            }
+            Arrays.fill(distanceTo[row], Double.POSITIVE_INFINITY);
       }
+      
+      // precomputes energy for each pixel
+      double[][] energies = new double[height()][width()];
+      for (int row = 0; row < height(); row++)
+         for (int col = 0; col < width(); col++)
+            energies[row][col] = energy(col, row);
+      
+      // dynamic programming (shortest path via topological sort)
+      for (int row = 0; row < height()-1; row++)
+         for (int col = 0; col < width(); col++) {
+            int[] offsets;
+            if (col == 0)
+               offsets = new int[]{0, 1};
+            else if (col == width()-1)
+               offsets = new int[]{-1, 0};
+            else
+               offsets = new int[]{-1, 0, 1};
+            for (int s: offsets)
+               if (distanceTo[row+1][col+s] > distanceTo[row][col]+energies[row+1][col+s]) {
+                  distanceTo[row+1][col+s] = distanceTo[row][col]+energies[row+1][col+s];
+                  offsetTo[row+1][col+s] = s;
+               }
+         }
 
-   // find index of the last row with minimum distanceTo value
-   int index = 0;
-   for (int col = 0; col < width(); col++)
-      if (distanceTo[height()-1][col] < distanceTo[height()-1][index])
-         index = col;
-   
-   // construct seam array
-   int[] seam = new int[height()];
-   seam[height()-1] = index;
-   for (int row = height()-1; row > 0; row--)
-      seam[row-1] = seam[row] - offsetTo[row][seam[row]];
+      // find index of the last row with minimum distanceTo value
+      int index = 0;
+      for (int col = 0; col < width(); col++)
+         if (distanceTo[height()-1][col] < distanceTo[height()-1][index])
+            index = col;
+      
+      // construct seam array
+      int[] seam = new int[height()];
+      seam[height()-1] = index;
+      for (int row = height()-1; row > 0; row--)
+         seam[row-1] = seam[row] - offsetTo[row][seam[row]];
 
-   return seam;
+      return seam;
    }
 
    // remove horizontal seam from current picture
